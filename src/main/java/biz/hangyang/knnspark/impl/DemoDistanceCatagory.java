@@ -14,9 +14,9 @@ import biz.hangyang.knnspark.inf.DistanceCatagory;
  */
 public class DemoDistanceCatagory  extends DistanceCatagory{
     //初始化类别和距离
-  public DemoDistanceCatagory(Double distance,String category){
+  public DemoDistanceCatagory(Double distance,Object category){
       this.distance = distance;
-      this.category = category;
+      this.category = (String)category;
   }
 
     @Override
@@ -25,8 +25,8 @@ public class DemoDistanceCatagory  extends DistanceCatagory{
     }
 
     @Override
-    public Double getCategory() {
-        return (Double)this.category;
+    public Object getCategory() {
+        return (String)this.category;
     }
     
 }

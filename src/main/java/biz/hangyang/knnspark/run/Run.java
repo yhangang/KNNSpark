@@ -25,6 +25,8 @@ public class Run {
 //        conf.set("spark.executor.memory", "1g");
 //        conf.set("spark.cores.max", "20");
         JavaSparkContext sc = new JavaSparkContext(conf);
+        
+        
     }
 
 }

@@ -19,5 +19,5 @@ public abstract class DistanceCatagory {
 
     public abstract Double getDistance();
 
-    public abstract Double getCategory();
+    public abstract Object getCategory();
 }
