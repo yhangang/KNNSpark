@@ -20,7 +20,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.mycompany.sparkdemo.SparkDemo</mainClass>
+                            <mainClass>biz.hangyang.knnspark.run.Run</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

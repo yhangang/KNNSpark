@@ -19,5 +19,7 @@ public abstract class Entity {
 
     //计算样本间的距离
     public abstract double distance(Entity entity);
-
+    //转化为字符串
+    @Override
+    public abstract String toString();
 }
