@@ -7,6 +7,8 @@ package biz.hangyang.knnspark.tools;
 
 import biz.hangyang.knnspark.impl.DemoDistanceCatagory;
 import biz.hangyang.knnspark.inf.DistanceCatagory;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 用于存放前K个最小的距离及类别，主要作用是实现自动排序
@@ -60,6 +62,39 @@ public class KDistance {
     public DistanceCatagory[] get(){
         return distances;
     }
+    
+    /**
+     * 从K个最近邻点中找出出现频率最大的类别
+     * @param distances
+     * @return 
+     */
+    public static Object getCatagory(DistanceCatagory[] distances){
+         Map<Object, Integer> map = new HashMap<>();
+         //记录最大频率及对应的了类别
+         Object category=null;
+         int maxFreq = 0;
+         
+         for(int i=0;i<distances.length;i++){
+             if(map.get(distances[i].category)!=null){
+                 int value = map.get(distances[i].category);
+                  map.put(distances[i].category, value+1);
+                  if(value+1>maxFreq){
+                      maxFreq = value+1;
+                      category = distances[i].category;
+                  }
+             }else{
+                 map.put(distances[i].category, 1);
+                  if(maxFreq==0){
+                      maxFreq = 1;
+                      category = distances[i].category;
+                  }
+             }
+         }
+        return category;
+    }
+            
+            
+            
 
 //public static void main(String[] args) {
 //        KDistance k = new KDistance(3);

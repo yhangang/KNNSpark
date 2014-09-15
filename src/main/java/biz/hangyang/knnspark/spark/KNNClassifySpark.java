@@ -24,15 +24,17 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.apache.spark.api.java.function.PairFunction;
 import scala.Tuple2;
 
 /**
- *读取源数据，生成每条测试数据对应的K个最小距离及对应分类
+ * 读取源数据，生成每条测试数据对应的K个最小距离及对应分类，然后返回预测的分类
+ *
  * @author hangyang
  */
-public class CalKDistanceSpark {
+public class KNNClassifySpark {
 
-    public static JavaPairRDD<Entity, KDistance> calKDistance(final String trainingDataPath, String testingDataPath, final int k,
+    public static JavaPairRDD<Entity, Object> calKDistance(final String trainingDataPath, String testingDataPath, final int k,
             JavaSparkContext sc, int partition) {
         JavaRDD<String> testingDataRDD = sc.textFile(testingDataPath, partition);
         //将文本数据转化为Entity类
@@ -69,14 +71,23 @@ public class CalKDistanceSpark {
                         kDistanceList.get(i).add(new DemoDistanceCatagory(lineEntity.distance(entityList.get(i)), lineEntity.category));
                     }
                 }
-                
+
                 List<Tuple2<Entity, KDistance>> tList = new ArrayList<>();
-                for(int i = 0; i < entityList.size(); i++){
+                for (int i = 0; i < entityList.size(); i++) {
                     tList.add(new Tuple2<>(entityList.get(i), kDistanceList.get(i)));
                 }
                 return tList;
             }
         });
-        return ekRDD;
+        JavaPairRDD<Entity, Object> eoRDD = ekRDD.mapToPair(new PairFunction<Tuple2<Entity, KDistance>, Entity, Object>() {
+            @Override
+            public Tuple2<Entity, Object> call(Tuple2<Entity, KDistance> t) throws Exception {
+                KDistance kDistance = t._2();
+                Object catagory = KDistance.getCatagory(kDistance.get());
+                return new Tuple2<>(t._1(), catagory);
+            }
+        });
+
+        return eoRDD;
     }
 }
