@@ -22,9 +22,9 @@ public class Run {
 
     public static void main(String[] args) {
         //训练数据路径
-        final String trainingDataPath = "hdfs://localhost:9000/user/hangyang/knn/training.txt";
+        final String trainingDataPath = "hdfs://localhost:9000/user/hangyang/knn/training2.txt";
         //测试数据路径
-        String testingDataPath = "hdfs://localhost:9000/user/hangyang/knn/testing.txt";
+        String testingDataPath = "hdfs://localhost:9000/user/hangyang/knn/testing2.txt";
         //测试数据路径
         String resultDataPath = "hdfs://localhost:9000/user/hangyang/knn/result";
         //K值大小

@@ -6,7 +6,7 @@
 package biz.hangyang.knnspark.spark;
 
 import biz.hangyang.knnspark.impl.DemoDistanceCatagory;
-import biz.hangyang.knnspark.impl.DemoEntity;
+import biz.hangyang.knnspark.impl.GeneEntity;
 import biz.hangyang.knnspark.inf.Entity;
 import biz.hangyang.knnspark.tools.KDistance;
 import java.io.BufferedReader;
@@ -41,7 +41,7 @@ public class KNNClassifySpark {
         JavaRDD<Entity> testingEntityRDD = testingDataRDD.map(new Function<String, Entity>() {
             @Override
             public Entity call(String line) throws Exception {
-                return new DemoEntity(line);
+                return new GeneEntity(line);
             }
         });
         //读取训练数据，依次计算距离，保留最小的K个距离，生成KV对
@@ -66,7 +66,7 @@ public class KNNClassifySpark {
                 BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                 String line;
                 while ((line = br.readLine()) != null) {
-                    Entity lineEntity = new DemoEntity(line);
+                    Entity lineEntity = new GeneEntity(line);
                     for (int i = 0; i < entityList.size(); i++) {
                         kDistanceList.get(i).add(new DemoDistanceCatagory(lineEntity.distance(entityList.get(i)), lineEntity.category));
                     }
