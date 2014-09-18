@@ -20,9 +20,9 @@ import java.io.OutputStreamWriter;
  */
 public class Discretization {
 
-    static String srcFile = "/home/hangyang/jar/test.csv";
-    static String destFile = "/home/hangyang/jar/result.txt";
-    static int year = 7;
+    static String srcFile = "/home/hangyang/jar/KNN/STdata.csv";
+    static String destFile = "/home/hangyang/jar/KNN/STdata.txt";
+    static int year = 5;
     static int dataStartCol = 2;
 
     public static void main(String[] args) throws IOException {

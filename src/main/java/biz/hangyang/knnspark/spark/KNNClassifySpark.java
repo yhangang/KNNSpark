@@ -15,10 +15,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.spark.Accumulator;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -35,7 +37,7 @@ import scala.Tuple2;
 public class KNNClassifySpark {
 
     public static JavaPairRDD<Entity, Object> calKDistance(final String trainingDataPath, String testingDataPath, final int k,
-            JavaSparkContext sc, int partition) {
+            final Map<Object, Double> weightMap,JavaSparkContext sc, int partition,final Accumulator<Integer> accum) {
         JavaRDD<String> testingDataRDD = sc.textFile(testingDataPath, partition);
         //将文本数据转化为Entity类
         JavaRDD<Entity> testingEntityRDD = testingDataRDD.map(new Function<String, Entity>() {
@@ -79,11 +81,16 @@ public class KNNClassifySpark {
                 return tList;
             }
         });
+        
         JavaPairRDD<Entity, Object> eoRDD = ekRDD.mapToPair(new PairFunction<Tuple2<Entity, KDistance>, Entity, Object>() {
             @Override
             public Tuple2<Entity, Object> call(Tuple2<Entity, KDistance> t) throws Exception {
                 KDistance kDistance = t._2();
-                Object catagory = KDistance.getCatagory(kDistance.get());
+                //可用不同的计算最大频率的方法
+                Object catagory = KDistance.getCatagory(kDistance.get(),weightMap);
+                if(t._1().category.equals(catagory)){
+                    accum.add(1);
+                }
                 return new Tuple2<>(t._1(), catagory);
             }
         });

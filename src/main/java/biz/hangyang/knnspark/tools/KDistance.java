@@ -9,6 +9,7 @@ import biz.hangyang.knnspark.impl.DemoDistanceCatagory;
 import biz.hangyang.knnspark.inf.DistanceCatagory;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 用于存放前K个最小的距离及类别，主要作用是实现自动排序 前K个距离从小到大排列
@@ -70,41 +71,78 @@ public class KDistance {
      * @return
      */
     public static Object getCatagory(DistanceCatagory[] distances) {
-        Map<Object, Integer> map = new HashMap<>();
-        //记录最大频率及对应的了类别
+        Map<Object, Integer> map = new TreeMap<>();
+        //记录最大频率及对应的类别
         Object category = null;
-        int maxFreq = 0;
+        int maxFreq = -1;
 
         for (int i = 0; i < distances.length; i++) {
             if (map.get(distances[i].category) != null) {
                 int value = map.get(distances[i].category);
                 map.put(distances[i].category, value + 1);
-                if (value + 1 > maxFreq) {
-                    maxFreq = value + 1;
-                    category = distances[i].category;
-                }
             } else {
                 map.put(distances[i].category, 1);
-                if (maxFreq == 0) {
-                    maxFreq = 1;
-                    category = distances[i].category;
-                }
+            }
+        }
+        for (Object key : map.keySet()) {
+            Integer count = map.get(key);
+            if (count > maxFreq) {
+                maxFreq = count;
+                category = key;
+            }
+        }
+        return category;
+    }
+
+    /**
+     *重载getCatagory()方法
+     * 预先定义类别和对应权值，找出类别最多的那个
+     *
+     * @param distances
+     * @param weightMap
+     * @return
+     */
+    public static Object getCatagory(DistanceCatagory[] distances, Map<Object, Double> weightMap) {
+        //存放各类别样本的数量
+        Map<Object, Double> map = new TreeMap<>();
+        Object category = null;
+        Double maxFreq = -1.0;
+
+        for (Object key : weightMap.keySet()) {
+            map.put(key, 0.0);
+        }
+        for (int i = 0; i < distances.length; i++) {
+            if (map.containsKey(distances[i].category)) {
+                Double count = map.get(distances[i].category);
+                count = count + 1;
+                map.put(distances[i].category, count);
+            }
+        }
+        for (Object key : map.keySet()) {
+            Double count = map.get(key);
+            count = count * weightMap.get(key);
+            if (count > maxFreq) {
+                maxFreq = count;
+                category = key;
             }
         }
         return category;
     }
 
 //    public static void main(String[] args) {
-//        KDistance k = new KDistance(5);
+//        Map<Object, Double> weightMap = new HashMap<>();
+//        weightMap.put("男", 0.5);
+//        weightMap.put("女", 0.5);
+//        KDistance k = new KDistance(6);
 //        k.add(new DemoDistanceCatagory(3.0, "男"));
-//        k.add(new DemoDistanceCatagory(2.0, "vv"));
+//        k.add(new DemoDistanceCatagory(2.0, "男"));
 //        k.add(new DemoDistanceCatagory(1.0, "男"));
-//        k.add(new DemoDistanceCatagory(1.5, "vv"));
-//        k.add(new DemoDistanceCatagory(0.3, "vv"));
+//        k.add(new DemoDistanceCatagory(1.5, "女"));
+//        k.add(new DemoDistanceCatagory(0.3, "女"));
+//        k.add(new DemoDistanceCatagory(0.3, "女"));
 //        for (int i = 0; i < k.distances.length; i++) {
 //            System.out.println(k.distances[i].distance);
 //        }
 //        System.out.println(KDistance.getCatagory(k.get()));
 //    }
-
 }
